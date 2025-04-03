@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=eventzen-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  eventzen_sah:
+    image: eventzen_sah:latest
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: eventzen_sah
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/eventzen-db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL-AUTO=update
+      - SPRING_MAIL_HOST=smtp.gmail.com
+      - SPRING_MAIL_PORT=587  
+      - SPRING_MAIL_USERNAME=your-email@gmail.com
+      - SPRING_MAIL_PASSWORD=your-email-password
+      - SECURITY_JWT_SECRET-KEY=cssz3izcML7XwKWhCxijOjzL9rMzMA4jzUGs6uzE25nusEnAE7zJUPSW47hLYyhb79Fo0yYHc
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://eventzen_sah:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: on-failure
+
+volumes:
+  postgres-data:

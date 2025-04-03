@@ -1,0 +1,14 @@
+/.idea/
+/.vscode/           
+*.code-workspace 
+
+/src/main/resources/qrcode/**
+
+/frontend/node_modules
+
+/target/
+
+/frontend/build/
+
+/frontend/node/
+.DS_Store  
